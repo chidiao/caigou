@@ -42,10 +42,17 @@ const list = [
   },
   {
     text: '订单',
-    pagePath: 'pages/order/list',
+    pagePath: 'pages/order/peihuo',
     icon: '/static/tab-cate.png',
     selectedIcon: '/static/tab-cate-current.png',
-    group: [2, 3]
+    group: [2]
+  },
+  {
+    text: '订单',
+    pagePath: 'pages/order/driver',
+    icon: '/static/tab-cate.png',
+    selectedIcon: '/static/tab-cate-current.png',
+    group: [3]
   },
   {
     text: '我的',
