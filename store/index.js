@@ -5,86 +5,105 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	plugins: [
-		// 可以有多个持久化实例  
-		createPersistedState({
-			key: 'app_config_data', // 状态保存到本地的 key   
-			paths: ['hasLogin', 'userInfo', 'cookie','currentRole'], // 要持久化的状态，在state里面取，如果有嵌套，可以  a.b.c   
-			storage: { // 存储方式定义  
-				getItem: (key) => uni.getStorageSync(key), // 获取  
-				setItem: (key, value) => uni.setStorageSync(key, value), // 存储  
-				removeItem: (key) => uni.removeStorageSync(key) // 删除  
-			}
-		})
-	],
-	 state: {
-		hasLogin: false,
-		userInfo: {
-			token: ''
-		},
-		lang: 'zh-cn',
-	   cookie: '',
-	   role: 'clerk',
-	 tabsConfig: {
-	    clerk: [
-	      {pagePath: "pages/category/category", text: "分类", icon: "static/tab-cate.png", selectedIcon: "static/tab-cate-current.png"},
-	      {pagePath: "pages/cart/cart", text: "购物车", icon: "static/tab-cart.png", selectedIcon: "static/tab-cart-current.png"}
-	    ],
-	    // picker: [
-	    //   {pagePath: "/pages/task/index", text: "任务", icon: "/static/tab/task.png", selectedIcon: "/static/tab/task-active.png"},
-	    //   {pagePath: "/pages/scan/index", text: "扫码", icon: "/static/tab/scan.png", selectedIcon: "/static/tab/scan-active.png"}
-	    // ],
-	    // driver: [
-	    //   {pagePath: "/pages/delivery/index", text: "配送", icon: "/static/tab/delivery.png", selectedIcon: "/static/tab/delivery-active.png"},
-	    //    {pagePath: "/pages/map/index", text: "导航", icon: "/static/tab/map.png", selectedIcon: "/static/tab/map-active.png"}
-	    // ]
-	  }
-	},
-     getters: {
-    currentTabs: state => state.tabsConfig[state.role]
+  plugins: [
+    // 可以有多个持久化实例
+    createPersistedState({
+      key: 'app_config_data', // 状态保存到本地的 key
+      paths: ['hasLogin', 'userInfo', 'cookie', 'currentRole'], // 要持久化的状态，在state里面取，如果有嵌套，可以  a.b.c
+      storage: {
+        // 存储方式定义
+        getItem: (key) => uni.getStorageSync(key), // 获取
+        setItem: (key, value) => uni.setStorageSync(key, value), // 存储
+        removeItem: (key) => uni.removeStorageSync(key) // 删除
+      }
+    })
+  ],
+  state: {
+    hasLogin: false,
+    userInfo: {
+      token: ''
     },
-	mutations: {
-		SET_ROLE(state, role) {
-		    state.role = role
-			console.log('当前角色',role);
-		 uni.setStorage({ //缓存用户信息
-		 	key: 'currentRole',
-		 	data: role
-		 });
-		  },
-		login(state, provider) {
-			state.hasLogin = true;
-			state.userInfo = provider;
-			uni.setStorage({ //缓存用户信息
-				key: 'userInfo',
-				data: provider
-			});
-		},
-		logout(state) {
-			state.hasLogin = false;
-			state.userInfo = {};
-			uni.removeStorage({
-				key: 'userInfo'
-			});
-		},
-		setUserInfo(state, provider) {
-			state.userInfo = provider;
-			uni.setStorage({ //缓存用户信息
-				key: 'userInfo',
-				data: provider
-			});
-		},
-		setCookie(state, provider) {
-			state.cookie = provider;
-			uni.setStorage({
-				key: 'cookieKey',
-				data: provider
-			});
-		}
-	},
-	actions: {
+    lang: 'zh-cn',
+    cookie: '',
+    role: 'clerk',
+    tabsConfig: {
+      clerk: [
+        {
+          pagePath: 'pages/category/category',
+          text: '分类',
+          icon: 'static/tab-cate.png',
+          selectedIcon: 'static/tab-cate-current.png'
+        },
+        {
+          pagePath: 'pages/cart/cart',
+          text: '购物车',
+          icon: 'static/tab-cart.png',
+          selectedIcon: 'static/tab-cart-current.png'
+        }
+      ]
+      // picker: [
+      //   {pagePath: "/pages/task/index", text: "任务", icon: "/static/tab/task.png", selectedIcon: "/static/tab/task-active.png"},
+      //   {pagePath: "/pages/scan/index", text: "扫码", icon: "/static/tab/scan.png", selectedIcon: "/static/tab/scan-active.png"}
+      // ],
+      // driver: [
+      //   {pagePath: "/pages/delivery/index", text: "配送", icon: "/static/tab/delivery.png", selectedIcon: "/static/tab/delivery-active.png"},
+      //    {pagePath: "/pages/map/index", text: "导航", icon: "/static/tab/map.png", selectedIcon: "/static/tab/map-active.png"}
+      // ]
+    }
+  },
+  getters: {
+    currentTabs: (state) => state.tabsConfig[state.role]
+  },
+  mutations: {
+    SET_ROLE(state, role) {
+      state.role = role
+      console.log('当前角色', role)
+      uni.setStorage({
+        //缓存用户信息
+        key: 'currentRole',
+        data: role
+      })
+    },
+    login(state, provider) {
+      state.hasLogin = true
+      state.userInfo = provider
+      uni.setStorage({
+        //缓存用户信息
+        key: 'userInfo',
+        data: provider
+      })
+    },
+    logout(state) {
+      state.hasLogin = false
+      state.userInfo = {}
+      uni.removeStorage({
+        key: 'userInfo'
+      })
+    },
+    setUserInfo(state, provider) {
+      state.userInfo = provider
+      uni.setStorage({
+        //缓存用户信息
+        key: 'userInfo',
+        data: provider
+      })
+    },
+    setCookie(state, provider) {
+      state.cookie = provider
+      uni.setStorage({
+        key: 'cookieKey',
+        data: provider
+      })
+    }
+  },
+  actions: {
+    userLogin({ commit }, data) {
+      const role = data.group_id || 1
 
-	}
+      commit('login', data)
+      commit('SET_ROLE', role)
+    }
+  }
 })
 
 export default store

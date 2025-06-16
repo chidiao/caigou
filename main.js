@@ -2,7 +2,7 @@ import Vue from 'vue'
 import store from './store'
 import App from './App'
 // 后端api地址
-Vue.prototype.$unishow = "http://192.168.1.3/addons/unishop";
+Vue.prototype.$unishow = "https://cg.milimeng.xyz/addons/unishop";
 
 
 // 为了方便每次上传的时候忘记修改上面的参数
