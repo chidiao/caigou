@@ -20,9 +20,9 @@
 
           <!-- 订单列表 -->
           <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item">
-            <button class="action-btn" @click.stop="takeOrder(item)" v-if="item.state === 2">接单</button>
-            <button class="action-btn" @click.stop="completeOrder(item)" v-if="item.state === 3">完成</button>
-            <button class="action-btn disabled" @click.stop v-if="item.state === 4">已完成</button>
+            <button class="action-btn" @click.stop="takeOrder(item)" v-if="tabCurrentIndex == 0">接单</button>
+            <button class="action-btn" @click.stop="completeOrder(item)" v-else-if="tabCurrentIndex == 1">完成</button>
+            <button class="action-btn disabled" @click.stop v-else>已完成</button>
           </my-order>
 
           <uni-load-more :status="tabItem.loadingType"></uni-load-more>
@@ -290,14 +290,14 @@ export default {
           sizeType: ['compressed'],
           sourceType: ['album', 'camera']
         })
-        
+
         if (err) {
           this.$api.msg('选择图片失败')
           return null
         }
 
         // 上传所有图片
-        const uploadPromises = imageRes.tempFilePaths.map(filePath => 
+        const uploadPromises = imageRes.tempFilePaths.map((filePath) =>
           uni.uploadFile({
             url: 'https://cg.milimeng.xyz/api/common/upload',
             filePath: filePath,
@@ -309,19 +309,21 @@ export default {
         )
 
         const uploadResults = await Promise.all(uploadPromises)
-        
+
         // 检查是否有上传失败的图片
-        const failedUploads = uploadResults.filter(result => result[0])
+        const failedUploads = uploadResults.filter((result) => result[0])
         if (failedUploads.length > 0) {
           this.$api.msg('部分图片上传失败')
           return null
         }
 
         // 解析所有上传结果
-        const imageUrls = uploadResults.map(result => {
-          const uploadResult = JSON.parse(result[1].data)
-          return uploadResult.url
-        }).filter(url => url) // 过滤掉无效的URL
+        const imageUrls = uploadResults
+          .map((result) => {
+            const uploadResult = JSON.parse(result[1].data)
+            return uploadResult.url
+          })
+          .filter((url) => url) // 过滤掉无效的URL
 
         if (imageUrls.length === 0) {
           this.$api.msg('上传图片失败')
@@ -342,7 +344,7 @@ export default {
           order_id: orderId,
           d_img: imageUrls.join(',') // 将图片URL数组转换为逗号分隔的字符串
         })
-        
+
         if (result) {
           this.$api.msg('订单已完成')
           // 刷新列表

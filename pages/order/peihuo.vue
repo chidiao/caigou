@@ -20,8 +20,8 @@
 
           <!-- 订单列表 -->
           <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item">
-            <button class="action-btn" @click.stop="onEdit(item)" v-if="item.state === 2">修改数量</button>
-            <button class="action-btn" @click.stop v-if="item.state === 3">已配货</button>
+            <button class="action-btn" @click.stop="onEdit(item)" v-if="tabCurrentIndex == 0">修改数量</button>
+            <button class="action-btn" @click.stop v-else>已配货</button>
           </my-order>
 
           <uni-load-more :status="tabItem.loadingType"></uni-load-more>
