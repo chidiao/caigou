@@ -77,8 +77,8 @@ export default {
       pageSize: 10
     }
   },
-  onLoad(options) {
-    this.loadData()
+  onShow() {
+    this.pullDownRefresh()
   },
   onPullDownRefresh() {
     this.pullDownRefresh()

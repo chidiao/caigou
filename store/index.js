@@ -55,13 +55,13 @@ const store = new Vuex.Store({
         })
       }
     },
-    login(state, provider) {
+    SET_USER(state, user) {
       state.hasLogin = true
-      state.userInfo = provider
+      state.userInfo = user
       uni.setStorage({
         //缓存用户信息
         key: 'userInfo',
-        data: provider
+        data: user
       })
     },
     logout(state) {
@@ -89,9 +89,10 @@ const store = new Vuex.Store({
   },
   actions: {
     userLogin({ commit }, data) {
+      console.log(123)
       const role = data.group_id || 1
 
-      commit('login', data)
+      commit('SET_USER', data)
       commit('SET_ROLE', role)
     }
   }

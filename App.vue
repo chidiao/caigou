@@ -11,22 +11,23 @@
 import { mapMutations, mapState } from 'vuex'
 export default {
   methods: {
-    ...mapMutations(['login', 'logout', 'setUserInfo']),
-    // #ifdef H5
-    // 检查登录状态
-    async checkLogin() {
-      let user = uni.getStorageSync('userInfo')
-      if (user) {
-        this.login(user)
-      }
-      let result = await this.$api.request('/user/status')
-      if (!result) {
-        // 若没有登录则清空个人信息
-        this.logout()
-      }
-    }
+    ...mapMutations(['logout', 'setUserInfo']),
 
-    // #endif
+    checkLogin() {
+      return new Promise(async (resolve, reject) => {
+        let user = uni.getStorageSync('userInfo')
+        if (user) {
+          this.$store.dispatch('userLogin', user)
+        }
+        let result = await this.$api.request('/user/status')
+        if (!result) {
+          this.logout()
+          resolve(false)
+        }
+
+        resolve(true)
+      })
+    }
   },
   onLaunch: function () {
     // 锁定屏幕竖向
@@ -35,15 +36,14 @@ export default {
     // #endif
     // 根据用户角色动态设置tabBar
   },
-  onShow: function () {
-    console.log('App Show')
-    // 检查用户登录情况
-    // #ifdef H5
-    this.checkLogin()
-    // #endif
-    // #ifdef MP-WEIXIN
-    this.$wechatMiniLogin()
-    // #endif
+  async onShow() {
+    const isLogin = await this.checkLogin()
+
+    if (!isLogin) {
+      // #ifdef MP-WEIXIN
+      this.$wechatMiniLogin()
+      // #endif
+    }
   },
   onHide: function () {
     console.log('App Hide')

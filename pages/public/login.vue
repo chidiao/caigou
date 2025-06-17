@@ -57,7 +57,6 @@ export default {
   },
   onLoad() {},
   methods: {
-    ...mapMutations(['login']),
     inputChange(e) {
       const key = e.currentTarget.dataset.key
       this[key] = e.detail.value
@@ -72,7 +71,7 @@ export default {
         password: this.password
       })
       if (data) {
-        this.$store.commit('login', data)
+        this.$store.dispatch('userLogin', data)
         this.logining = true
 
         setTimeout(function () {
@@ -96,7 +95,7 @@ export default {
         })
 
         if (data) {
-          this.$store.commit('login', data)
+          this.$store.dispatch('userLogin', data)
           this.$api.msg('登录成功')
           setTimeout(function () {
             uni.navigateBack()

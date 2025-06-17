@@ -100,8 +100,8 @@ export default {
       }
     }
   },
-  onLoad(options) {
-    this.loadData()
+  onShow() {
+    this.pullDownRefresh()
   },
   onPullDownRefresh() {
     this.pullDownRefresh()
