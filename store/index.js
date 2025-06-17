@@ -40,6 +40,20 @@ const store = new Vuex.Store({
         key: 'currentRole',
         data: role
       })
+
+      if (role == 1) {
+        uni.switchTab({
+          url: '/pages/category/category'
+        })
+      } else if (role == 2) {
+        uni.switchTab({
+          url: '/pages/order/peihuo'
+        })
+      } else if (role == 3) {
+        uni.switchTab({
+          url: '/pages/order/driver'
+        })
+      }
     },
     login(state, provider) {
       state.hasLogin = true
