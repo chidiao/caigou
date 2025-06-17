@@ -19,8 +19,8 @@
           <empty v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></empty>
 
           <!-- 订单列表 -->
-          <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item">
-            <button class="action-btn" @click.stop="onEdit(item)" v-if="tabCurrentIndex == 0">修改数量</button>
+          <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item" @edit="onEdit">
+            <button class="action-btn" @click.stop="onSend(item)" v-if="tabCurrentIndex == 0">确认配货</button>
             <button class="action-btn" @click.stop v-else>已配货</button>
           </my-order>
 
@@ -400,6 +400,27 @@ export default {
         }
       } catch (error) {
         this.$api.msg('修改失败')
+      }
+    },
+    async onSend(item) {
+      let [error, res] = await uni.showModal({
+        title: '确认配货',
+        content: '确认已完成该订单的配货？'
+      })
+
+      if (res.confirm) {
+        try {
+          const result = await this.$api.request('/order/ph_confirm', 'POST', {
+            order_id: item.order_id
+          })
+
+          if (result) {
+            this.$api.msg('配货确认成功')
+            this.pullDownRefresh()
+          }
+        } catch (error) {
+          this.$api.msg('配货确认失败')
+        }
       }
     }
   }

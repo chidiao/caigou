@@ -31,6 +31,21 @@
           评价
         </button>
       </view>
+
+      <view
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 14px;
+          opacity: 0.8;
+          padding-right: 12px;
+        "
+        v-if="showEdit"
+        @click.stop="onEdit(goodsItem)"
+      >
+        修改数量
+      </view>
     </view>
 
     <view class="price-box">
@@ -57,7 +72,7 @@
 import store from '@/store'
 export default {
   props: ['item'],
-  emits: ['click'],
+  emits: ['click', 'edit'],
   methods: {
     quantity(products) {
       let number = 0
@@ -68,11 +83,21 @@ export default {
     },
     navTo(url) {
       this.$api.navTo(url)
+    },
+    onEdit(item) {
+      const order = {
+        order_id: this.item.order_id,
+        products: [item]
+      }
+      this.$emit('edit', order)
     }
   },
   computed: {
     showState() {
       return store.state.role == 1
+    },
+    showEdit() {
+      return store.state.role == 2
     }
   }
 }
