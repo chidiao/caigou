@@ -334,8 +334,12 @@ export default {
       }
     },
     pullDownRefresh() {
-      this.navList = []
-      this.navList = navList
+      // 重置当前标签页的数据
+      const currentNav = this.navList[this.tabCurrentIndex]
+      currentNav.orderList = []
+      currentNav.page = 1
+      currentNav.loadingType = 'more'
+      currentNav.loaded = false
       this.loadData()
     },
     onEdit(item) {

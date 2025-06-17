@@ -257,7 +257,7 @@ export default {
         content: '接单后将开始配送'
       })
       if (res.confirm) {
-        let result = await this.$api.request('/order/sj_edit', 'GET', {
+        let result = await this.$api.request('/order/sj_edit', 'POST', {
           order_id: item.order_id
         })
         if (result) {
@@ -358,8 +358,12 @@ export default {
       this.$api.navTo(url)
     },
     pullDownRefresh() {
-      this.navList = []
-      this.navList = navList
+      // 重置当前标签页的数据
+      const currentNav = this.navList[this.tabCurrentIndex]
+      currentNav.orderList = []
+      currentNav.page = 1
+      currentNav.loadingType = 'more'
+      currentNav.loaded = false
       this.loadData()
     }
   }
