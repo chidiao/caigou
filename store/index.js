@@ -59,7 +59,6 @@ const store = new Vuex.Store({
       state.hasLogin = true
       state.userInfo = user
       uni.setStorage({
-        //缓存用户信息
         key: 'userInfo',
         data: user
       })

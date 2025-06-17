@@ -39,14 +39,15 @@
       <image class="arc" src="/static/arc.png"></image>
 
       <!-- 订单 -->
-      <view class="order-header">
+      <view class="order-header" v-if="role == 1">
         <view class="title">我的订单</view>
         <view class="item" @click="$api.navTo('/pages/order/order?state=0')"
           >查看全部订单
           <text class="yticon right icon-you"></text>
         </view>
       </view>
-      <view class="order-section">
+
+      <view class="order-section" v-if="role == 1">
         <view
           class="order-item"
           @click="$api.navTo('/pages/order/order?state=1')"
@@ -98,6 +99,7 @@
           <text>退款/售后</text>
         </view>
       </view>
+
       <!-- 浏览历史 -->
       <view class="history-section icon">
         <!-- <view class="sec-header">
@@ -117,6 +119,7 @@
           icon="icon-dizhi"
           iconColor="#5fcda2"
           title="地址管理"
+          v-if="role == 1"
           @eventClick="$api.navTo('/pages/address/address')"
         ></list-cell>
         <!-- <list-cell icon="icon-share" iconColor="#9789f7" title="分享" tips="邀请好友赢10万大礼"></list-cell> -->
@@ -125,6 +128,7 @@
           icon="icon-shoucang-setting"
           iconColor="#54b4ef"
           title="我的收藏"
+          v-if="role == 1"
           @eventClick="$api.navTo('/pages/favorite/favorite')"
         ></list-cell>
         <list-cell
@@ -137,9 +141,10 @@
       </view>
     </view>
 
-		<my-tab-bar></my-tab-bar>
+    <my-tab-bar></my-tab-bar>
   </view>
 </template>
+
 <script>
 import listCell from '@/components/mix-list-cell'
 import { mapState } from 'vuex'
@@ -191,7 +196,7 @@ export default {
   },
   // #endif
   computed: {
-    ...mapState(['hasLogin', 'userInfo'])
+    ...mapState(['hasLogin', 'userInfo', 'role'])
   },
   methods: {
     /**
