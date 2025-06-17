@@ -41,10 +41,9 @@
               <uni-number-box
                 class="step"
                 :min="1"
-                :max="item.stock"
-                :disabled="item.number >= item.stock"
+                :max="999999999"
                 :value="cartList[index].number"
-                :isMax="item.number >= item.stock ? true : false"
+                :isMax="item.number >= 999999999 ? true : false"
                 :isMin="item.number === 1"
                 :index="index"
                 @eventChange="numberChange"

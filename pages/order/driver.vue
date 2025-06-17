@@ -21,7 +21,7 @@
           <!-- 订单列表 -->
           <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item">
             <button class="action-btn" @click.stop="takeOrder(item)" v-if="tabCurrentIndex == 0">接单</button>
-            <button class="action-btn" @click.stop="completeOrder(item)" v-else-if="tabCurrentIndex == 1">完成</button>
+            <button class="action-btn" @click.stop="completeOrder(item)" v-else-if="tabCurrentIndex == 1">确认送达</button>
             <button class="action-btn disabled" @click.stop v-else>已完成</button>
           </my-order>
 

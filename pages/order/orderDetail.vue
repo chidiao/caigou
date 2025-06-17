@@ -1,8 +1,8 @@
 <template>
   <view>
-    <view class="header">
-      <view class="left">{{ status + (order.refund_status_text ? ':' + order.refund_status_text : '') }}</view>
-    </view>
+    <!--  <view class="header">
+    <view class="left">{{ status + (order.refund_status_text ? ':' + order.refund_status_text : '') }}</view> 
+    </view>-->
     <view class="delivery" v-if="order.have_delivered">
       <view class="icon">
         <text class="cell-icon yticon icon-huoche" style="color: #ffffff"></text>
@@ -57,10 +57,10 @@
       <view class="title">订单信息</view>
       <view>订单编号：{{ order.out_trade_no }}</view>
       <view>创建时间：{{ order.createtime }}</view>
-      <view>付款时间：{{ order.have_paid ? order.paidtime : '未付款' }}</view>
+     <!-- <view>付款时间：{{ order.have_paid ? order.paidtime : '未付款' }}</view>
       <view>发货时间：{{ order.have_delivered ? order.deliveredtime : '未发货' }}</view>
       <view v-if="order.have_received">成交时间：{{ order.receivedtime }}</view>
-      <view v-if="order.have_refunded">退货时间：{{ order.refundedtime }}</view>
+      <view v-if="order.have_refunded">退货时间：{{ order.refundedtime }}</view> -->
     </view>
     <view style="height: 10rpx">
       <!--兼容苹果系统下margin-bottom不生效-->

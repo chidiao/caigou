@@ -44,9 +44,10 @@
 					<view class="price-box">
 						<view class="price">￥{{item.sales_price}} <del class="market_price">￥{{item.market_price}}</del></view>
 						<!-- <text class="number">x 1</text> -->
-						<uni-number-box v-if="progress.number" class="step" :min="1" :max="9999999"  :disabled="item.number>=(progress.number - progress.sold)"  :value="item.number" :isMax="(progress.number - progress.sold) <= item.number?true:false"
+						<uni-number-box v-if="progress.number" class="step" :min="1" :max="9999999"  :value="item.number"   :isMax="item.number >= 999999999 ? true : false"
+               
 						 :isMin="item.number===1" :index="index" @eventChange="numberChange"></uni-number-box>
-						 <uni-number-box v-else class="step" :min="1" :max="99999999"  :disabled="item.number>=99999999"  :value="item.number" :isMax="item.stock <= item.number?true:false"
+						 <uni-number-box v-else class="step" :min="1" :max="99999999"    :value="item.number" :isMax="item.number >= 999999999 ? true : false"
 						  :isMin="item.number===1" :index="index" @eventChange="numberChange"></uni-number-box>
 					</view>
 				</view>
@@ -324,7 +325,7 @@
 				//判断当前库存
 				let stock = this.product[data.index].stock;
 				if (newNumber > this.product[data.index].stock) {
-					this.product[data.index].number = stock;
+				//	this.product[data.index].number = stock;
 				}
 
 			},

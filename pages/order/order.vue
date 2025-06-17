@@ -129,14 +129,14 @@ export default {
         // },
         {
           state: 2,
-          text: '待发货',
+          text: '待配货',
           loadingType: 'more',
           orderList: [],
           page: 1
         },
         {
           state: 3,
-          text: '待收货',
+          text: '待接单',
           loadingType: 'more',
           orderList: [],
           page: 1
@@ -148,13 +148,13 @@ export default {
           orderList: [],
           page: 1
         },
-        {
-          state: 5,
-          text: '售后',
-          loadingType: 'more',
-          orderList: [],
-          page: 1
-        }
+        // {
+        //   state: 5,
+        //   text: '售后',
+        //   loadingType: 'more',
+        //   orderList: [],
+        //   page: 1
+        // }
       ],
       pageSize: 10
     }

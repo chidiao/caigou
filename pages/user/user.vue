@@ -48,7 +48,7 @@
       </view>
 
       <view class="order-section" v-if="role == 1">
-        <view
+  <!--      <view
           class="order-item"
           @click="$api.navTo('/pages/order/order?state=1')"
           hover-class="common-hover"
@@ -57,16 +57,16 @@
           <text class="yticon icon-daifukuan"></text>
           <text class="num" v-if="orderNum.unpaid > 0">{{ orderNum.unpaid }}</text>
           <text>待付款</text>
-        </view>
+        </view> -->
         <view
           class="order-item"
-          @click="$api.navTo('/pages/order/order?state=2')"
+          @click="$api.navTo('/pages/order/order?state=1')"
           hover-class="common-hover"
           :hover-stay-time="50"
         >
           <text class="yticon icon-daifahuo"></text>
           <text class="num" v-if="orderNum.undelivered > 0">{{ orderNum.undelivered }}</text>
-          <text>待发货</text>
+          <text>待配货</text>
         </view>
         <view
           class="order-item"
@@ -76,7 +76,7 @@
         >
           <text class="yticon icon-daishouhuo"></text>
           <text class="num" v-if="orderNum.unreceived > 0">{{ orderNum.unreceived }}</text>
-          <text>待收货</text>
+          <text>待接单</text>
         </view>
         <view
           class="order-item"
@@ -86,9 +86,9 @@
         >
           <text class="yticon icon-pingjia"></text>
           <text class="num" v-if="orderNum.uncomment > 0">{{ orderNum.uncomment }}</text>
-          <text>评价</text>
+          <text>完成</text>
         </view>
-        <view
+       <!-- <view
           class="order-item"
           @click="$api.navTo('/pages/order/order?state=5')"
           hover-class="common-hover"
@@ -97,7 +97,7 @@
           <text class="yticon icon-shouhou"></text>
           <text class="num" v-if="orderNum.refund > 0">{{ orderNum.refund }}</text>
           <text>退款/售后</text>
-        </view>
+        </view> -->
       </view>
 
       <!-- 浏览历史 -->
