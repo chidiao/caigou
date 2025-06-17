@@ -296,42 +296,76 @@ export default {
           return null
         }
 
-        // 上传所有图片
-        const uploadPromises = imageRes.tempFilePaths.map((filePath) =>
-          uni.uploadFile({
-            url: 'https://cg.milimeng.xyz/api/common/upload',
-            filePath: filePath,
-            name: 'file',
-            header: {
-              'content-type': 'multipart/form-data'
-            }
+        // 从 vuex 获取 token
+        const token = this.$store.state.userInfo.token
+
+        // 显示上传进度弹窗
+        uni.showLoading({
+          title: '准备上传...',
+          mask: true
+        })
+
+        // 存储上传成功的图片URL
+        const uploadedUrls = []
+        const totalImages = imageRes.tempFilePaths.length
+
+        // 逐个上传图片
+        for (let i = 0; i < totalImages; i++) {
+          uni.showLoading({
+            title: `正在上传 ${i + 1}/${totalImages}`,
+            mask: true
           })
-        )
 
-        const uploadResults = await Promise.all(uploadPromises)
+          try {
+            const [uploadErr, uploadRes] = await uni.uploadFile({
+              url: 'https://cg.milimeng.xyz/api/common/upload',
+              filePath: imageRes.tempFilePaths[i],
+              name: 'file',
+              header: {
+                'content-type': 'multipart/form-data',
+                token
+              }
+            })
 
-        // 检查是否有上传失败的图片
-        const failedUploads = uploadResults.filter((result) => result[0])
-        if (failedUploads.length > 0) {
-          this.$api.msg('部分图片上传失败')
-          return null
+            if (uploadErr) {
+              throw new Error('上传失败')
+            }
+
+            const result = JSON.parse(uploadRes.data)
+            if (result.data && result.data.fullurl) {
+              uploadedUrls.push(result.data.fullurl)
+            } else {
+              throw new Error('上传返回数据格式错误')
+            }
+          } catch (error) {
+            uni.hideLoading()
+            this.$api.msg(`第 ${i + 1} 张图片上传失败`)
+            return null
+          }
         }
 
-        // 解析所有上传结果
-        const imageUrls = uploadResults
-          .map((result) => {
-            const uploadResult = JSON.parse(result[1].data)
-            return uploadResult.url
-          })
-          .filter((url) => url) // 过滤掉无效的URL
+        uni.hideLoading()
 
-        if (imageUrls.length === 0) {
+        if (uploadedUrls.length === 0) {
           this.$api.msg('上传图片失败')
           return null
         }
 
-        return imageUrls
+        // 显示确认弹窗
+        const [confirmErr, confirmRes] = await uni.showModal({
+          title: '上传完成',
+          content: `已成功上传 ${uploadedUrls.length} 张图片，是否确认？`,
+          confirmText: '确认',
+          cancelText: '重新上传'
+        })
+
+        if (confirmErr || !confirmRes.confirm) {
+          return null
+        }
+
+        return uploadedUrls
       } catch (error) {
+        uni.hideLoading()
         this.$api.msg('上传图片失败')
         return null
       }
