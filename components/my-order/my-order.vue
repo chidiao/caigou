@@ -2,8 +2,8 @@
   <view class="order-item" @click="navTo('/pages/order/orderDetail?order_id=' + item.order_id)">
     <view class="i-top b-b">
       <text class="time">{{ item.createtime }}</text>
-      <text class="state" :style="{ color: item.stateTipColor }"
-        >{{ item.stateTip + (item.refund_status_text ? ':' + item.refund_status_text : '') }}
+      <text class="state" :style="{ color: item.stateTipColor }" v-if="showState">
+        {{ item.stateTip + (item.refund_status_text ? ':' + item.refund_status_text : '') }}
       </text>
       <!-- <text v-if="item.state === 9" class="del-btn yticon icon-lajitong" @click.stop="deleteOrder(index)"></text> -->
     </view>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import store from '@/store'
 export default {
   props: ['item'],
   emits: ['click'],
@@ -67,6 +68,11 @@ export default {
     },
     navTo(url) {
       this.$api.navTo(url)
+    }
+  },
+  computed: {
+    showState() {
+      return store.state.role == 1
     }
   }
 }
