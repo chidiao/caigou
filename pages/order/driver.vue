@@ -20,7 +20,9 @@
 
           <!-- 订单列表 -->
           <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item">
-            <button class="action-btn recom" @click.stop="">修改数量</button>
+            <button class="action-btn" @click.stop="takeOrder(item)" v-if="item.state === 2">接单</button>
+            <button class="action-btn" @click.stop="completeOrder(item)" v-if="item.state === 3">完成</button>
+            <button class="action-btn disabled" @click.stop v-if="item.state === 4">已完成</button>
           </my-order>
 
           <uni-load-more :status="tabItem.loadingType"></uni-load-more>
@@ -140,19 +142,6 @@ export default {
     tabClick(index) {
       this.tabCurrentIndex = index
     },
-    //删除订单
-    async deleteOrder(index) {
-      let [error, res] = await uni.showModal({
-        title: '确认删除订单'
-      })
-      if (res.confirm) {
-        let order_id = this.navList[this.tabCurrentIndex].orderList[index].order_id
-        let result = await this.$api.request('/order/delete?order_id=' + order_id)
-        if (result) {
-          this.navList[this.tabCurrentIndex].orderList.splice(index, 1)
-        }
-      }
-    },
     //取消订单
     async cancelOrder(item) {
       let that = this
@@ -261,52 +250,110 @@ export default {
         stateTipColor
       }
     },
-    // 计算当前订单有多少个商品
-    quantity(products) {
-      let number = 0
-      for (let i in products) {
-        number += parseInt(products[i].number)
+    // 接单
+    async takeOrder(item) {
+      let [error, res] = await uni.showModal({
+        title: '确认接单',
+        content: '接单后将开始配送'
+      })
+      if (res.confirm) {
+        let result = await this.$api.request('/order/sj_edit', 'GET', {
+          order_id: item.order_id
+        })
+        if (result) {
+          this.$api.msg('接单成功')
+          // 刷新列表
+          this.pullDownRefresh()
+        }
       }
-      return number
+    },
+    // 完成订单
+    async completeOrder(item) {
+      let [error, res] = await uni.showModal({
+        title: '上传完成截图',
+        content: '请上传配送完成的截图'
+      })
+      if (res.confirm) {
+        const imageUrls = await this.uploadImage()
+        if (imageUrls && imageUrls.length > 0) {
+          await this.finishOrder(item.order_id, imageUrls)
+        }
+      }
+    },
+
+    // 选择并上传图片
+    async uploadImage() {
+      try {
+        // 选择图片
+        const [err, imageRes] = await uni.chooseImage({
+          count: 9, // 最多选择9张图片
+          sizeType: ['compressed'],
+          sourceType: ['album', 'camera']
+        })
+        
+        if (err) {
+          this.$api.msg('选择图片失败')
+          return null
+        }
+
+        // 上传所有图片
+        const uploadPromises = imageRes.tempFilePaths.map(filePath => 
+          uni.uploadFile({
+            url: 'https://cg.milimeng.xyz/api/common/upload',
+            filePath: filePath,
+            name: 'file',
+            header: {
+              'content-type': 'multipart/form-data'
+            }
+          })
+        )
+
+        const uploadResults = await Promise.all(uploadPromises)
+        
+        // 检查是否有上传失败的图片
+        const failedUploads = uploadResults.filter(result => result[0])
+        if (failedUploads.length > 0) {
+          this.$api.msg('部分图片上传失败')
+          return null
+        }
+
+        // 解析所有上传结果
+        const imageUrls = uploadResults.map(result => {
+          const uploadResult = JSON.parse(result[1].data)
+          return uploadResult.url
+        }).filter(url => url) // 过滤掉无效的URL
+
+        if (imageUrls.length === 0) {
+          this.$api.msg('上传图片失败')
+          return null
+        }
+
+        return imageUrls
+      } catch (error) {
+        this.$api.msg('上传图片失败')
+        return null
+      }
+    },
+
+    // 完成订单
+    async finishOrder(orderId, imageUrls) {
+      try {
+        const result = await this.$api.request('/order/sj_finish', 'POST', {
+          order_id: orderId,
+          d_img: imageUrls.join(',') // 将图片URL数组转换为逗号分隔的字符串
+        })
+        
+        if (result) {
+          this.$api.msg('订单已完成')
+          // 刷新列表
+          this.pullDownRefresh()
+        }
+      } catch (error) {
+        this.$api.msg('完成订单失败')
+      }
     },
     navTo(url) {
       this.$api.navTo(url)
-    },
-    // 下面的一排按钮
-    button(action, item) {
-      switch (action) {
-        case 'cancel':
-          this.cancelOrder(item)
-          break
-        case 'pay':
-          this.navTo('/pages/money/pay?order_id=' + item.order_id + '&total=' + item.total_price)
-          break
-        case 'delivery':
-          this.navTo(
-            '/pages/order/express?expresssn=' + item.extend.express_number + '&express=' + item.extend.express_company
-          )
-          break
-        case 'recerved':
-          this.receivedOrder(item)
-          break
-        case 'evaluate':
-          this.$api.navTo(
-            '/pages/order/evaluate?product_id=' +
-              item.id +
-              '&order_id=' +
-              item.order_id +
-              '&image=' +
-              item.image +
-              '&title=' +
-              item.title +
-              '&spec=' +
-              item.spec
-          )
-          break
-        case 'refund':
-          this.$api.navTo('/pages/order/refund?order_id=' + item.order_id)
-          break
-      }
     },
     pullDownRefresh() {
       this.navList = []
@@ -319,4 +366,13 @@ export default {
 
 <style lang="scss">
 @import './order.scss';
+
+.action-btn {
+  &.disabled {
+    background-color: #ccc;
+    color: #fff;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
 </style>
