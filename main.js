@@ -100,11 +100,13 @@ const deepCopy = (p, c) => {
 }
 
 // 同步网络请求
-const request = async (url, method = 'GET', data = {}, showMsg = true) => {
+const request = async (url, method = 'GET', data = {}, config = {}) => {
+  const { showMsg = true, header: customHeader = {} } = config;
   let header = {
     'content-type': 'application/x-www-form-urlencoded',
     lang: Vue.prototype.$store.state.lang,
-    platform: Vue.prototype.$platform
+    platform: Vue.prototype.$platform,
+    ...customHeader
   }
   if (Vue.prototype.$store.state.userInfo.token) {
     header.token = Vue.prototype.$store.state.userInfo.token

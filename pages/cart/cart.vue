@@ -204,7 +204,7 @@ export default {
       this.calcTotal()
 
       let cart_id = this.cartList[data.index].cart_id
-      let result = await this.$api.request('/cart/number_change?id=' + cart_id, 'GET', { number: newNumber }, false)
+      let result = await this.$api.request('/cart/number_change?id=' + cart_id, 'GET', { number: newNumber }, { showMsg: false })
       if (!result) {
         this.cartList[data.index].number = oldNumber
         this.calcTotal()

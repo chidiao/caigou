@@ -387,7 +387,11 @@ export default {
       console.log(saveData)
 
       try {
-        const result = await this.$api.request('/order/ph_edit', 'POST', saveData, {})
+        const result = await this.$api.request('/order/ph_edit', 'POST', saveData, {
+          header: {
+            'content-type': 'application/json'
+          }
+        })
         if (result) {
           this.$api.msg('修改成功')
           this.closeModal()
