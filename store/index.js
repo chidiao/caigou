@@ -25,31 +25,8 @@ const store = new Vuex.Store({
     },
     lang: 'zh-cn',
     cookie: '',
-    role: 'clerk',
-    tabsConfig: {
-      clerk: [
-        {
-          pagePath: 'pages/category/category',
-          text: '分类',
-          icon: 'static/tab-cate.png',
-          selectedIcon: 'static/tab-cate-current.png'
-        },
-        {
-          pagePath: 'pages/cart/cart',
-          text: '购物车',
-          icon: 'static/tab-cart.png',
-          selectedIcon: 'static/tab-cart-current.png'
-        }
-      ]
-      // picker: [
-      //   {pagePath: "/pages/task/index", text: "任务", icon: "/static/tab/task.png", selectedIcon: "/static/tab/task-active.png"},
-      //   {pagePath: "/pages/scan/index", text: "扫码", icon: "/static/tab/scan.png", selectedIcon: "/static/tab/scan-active.png"}
-      // ],
-      // driver: [
-      //   {pagePath: "/pages/delivery/index", text: "配送", icon: "/static/tab/delivery.png", selectedIcon: "/static/tab/delivery-active.png"},
-      //    {pagePath: "/pages/map/index", text: "导航", icon: "/static/tab/map.png", selectedIcon: "/static/tab/map-active.png"}
-      // ]
-    }
+    role: 1,
+    tabsConfig: {}
   },
   getters: {
     currentTabs: (state) => state.tabsConfig[state.role]
