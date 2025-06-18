@@ -41,7 +41,7 @@
           opacity: 0.8;
           padding-right: 12px;
         "
-        v-if="showEdit"
+        v-if="canEdit && showEdit"
         @click.stop="onEdit(goodsItem)"
       >
         修改数量
@@ -71,7 +71,7 @@
 <script>
 import store from '@/store'
 export default {
-  props: ['item'],
+  props: ['item', 'canEdit'],
   emits: ['click', 'edit'],
   methods: {
     quantity(products) {

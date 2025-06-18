@@ -19,7 +19,13 @@
           <empty v-if="tabItem.loaded === true && tabItem.orderList.length === 0"></empty>
 
           <!-- 订单列表 -->
-          <my-order v-for="(item, index) in tabItem.orderList" :key="index" :item="item" @edit="onEdit">
+          <my-order
+            v-for="(item, index) in tabItem.orderList"
+            :key="index"
+            :item="item"
+            :canEdit="tabCurrentIndex == 0"
+            @edit="onEdit"
+          >
             <button class="action-btn" @click.stop="onSend(item)" v-if="tabCurrentIndex == 0">确认配货</button>
             <button class="action-btn" @click.stop v-else>已配货</button>
           </my-order>
